@@ -184,11 +184,11 @@ spec:
         #   value: "1"
         resources:
           requests:
-            cpu: 100m
-            memory: 220Mi
+            cpu: 300m
+            memory: 520Mi
           limits:
-            cpu: 200m
-            memory: 450Mi
+            cpu: 400m
+            memory: 750Mi
 ---
 apiVersion: v1
 kind: Service
@@ -275,33 +275,33 @@ spec:
               cpu: 200m
               memory: 128Mi
 ---
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: frontend
-#spec:
-#  type: NodePort
-#  selector:
-#    app: frontend
-#  ports:
-#  - name: http
-#    port: 80
-#    targetPort: 8080
-#    nodePort: 30003  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
-
----
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-external
+  name: frontend
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: frontend
   ports:
   - name: http
     port: 80
     targetPort: 8080
+    nodePort: 30003  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
+
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: frontend-external
+#spec:
+#  type: ClusterIP
+#  selector:
+#    app: frontend
+#  ports:
+#  - name: http
+#    port: 80
+#    targetPort: 8080
 
 ---
 apiVersion: apps/v1
