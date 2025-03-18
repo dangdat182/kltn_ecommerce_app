@@ -1,0 +1,28 @@
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+
+deployment:
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8082"
+
+additionalArguments:
+  - "--entrypoints.web.address=:80"
+  - "--entrypoints.websecure.address=:443"
+  - "--entrypoints.websecure.http.tls.certResolver=default"
+  - "--entrypoints.websecure.http.tls.domains[0].main=yourdomain.com"
+  - "--entrypoints.websecure.http.tls.domains[0].sans=*.yourdomain.com"
+
+providers:
+  kubernetesCRD:
+    allowCrossNamespace: true
+  kubernetesIngress:
+    publishedService:
+      enabled: true
+
