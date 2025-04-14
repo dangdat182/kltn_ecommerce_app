@@ -53,10 +53,10 @@ spec:
             command: ["/bin/grpc_health_probe", "-addr=:8080"]
         resources:
           requests:
-            cpu: 100m
+            cpu: 50m
             memory: 64Mi
           limits:
-            cpu: 200m
+            cpu: 100m
             memory: 128Mi
 ---
 apiVersion: v1
@@ -124,10 +124,10 @@ spec:
           #   value: "jaeger-collector:14268"
           resources:
             requests:
-              cpu: 100m
+              cpu: 50m
               memory: 64Mi
             limits:
-              cpu: 200m
+              cpu: 100m
               memory: 128Mi
 ---
 apiVersion: v1
@@ -184,10 +184,10 @@ spec:
         #   value: "1"
         resources:
           requests:
-            cpu: 300m
+            cpu: 50m
             memory: 520Mi
           limits:
-            cpu: 400m
+            cpu: 100m
             memory: 750Mi
 ---
 apiVersion: v1
@@ -269,25 +269,25 @@ spec:
           #   value: "jaeger-collector:14268"
           resources:
             requests:
-              cpu: 100m
+              cpu: 50m
               memory: 64Mi
             limits:
-              cpu: 200m
+              cpu: 100m
               memory: 128Mi
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend
-spec:
-  type: NodePort
-  selector:
-    app: frontend
-  ports:
-  - name: http
-    port: 80
-    targetPort: 8080
-    nodePort: 30003  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: frontend
+# spec:
+#   type: NodePort
+#   selector:
+#     app: frontend
+#   ports:
+#   - name: http
+#     port: 80
+#     targetPort: 8080
+#     nodePort: 30003  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
 
 #---
 #apiVersion: v1
@@ -302,6 +302,19 @@ spec:
 #  - name: http
 #    port: 80
 #    targetPort: 8080
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080  # hoặc cổng bạn expose trong container
+  type: LoadBalancer
+
 
 ---
 apiVersion: apps/v1
@@ -335,10 +348,10 @@ spec:
             command: ["/bin/grpc_health_probe", "-addr=:50051"]
         resources:
           requests:
-            cpu: 100m
+            cpu: 50m
             memory: 64Mi
           limits:
-            cpu: 200m
+            cpu: 100m
             memory: 128Mi
 ---
 apiVersion: v1
@@ -395,10 +408,10 @@ spec:
             command: ["/bin/grpc_health_probe", "-addr=:3550"]
         resources:
           requests:
-            cpu: 100m
+            cpu: 50m
             memory: 64Mi
           limits:
-            cpu: 200m
+            cpu: 100m
             memory: 128Mi
 ---
 apiVersion: v1
@@ -445,10 +458,10 @@ spec:
           value: "0.0.0.0"
         resources:
           requests:
-            cpu: 200m
+            cpu: 50m
             memory: 64Mi
           limits:
-            cpu: 300m
+            cpu: 100m
             memory: 128Mi
         readinessProbe:
           initialDelaySeconds: 15
@@ -504,10 +517,10 @@ spec:
           value: "10"
         resources:
           requests:
-            cpu: 300m
+            cpu: 50m
             memory: 256Mi
           limits:
-            cpu: 500m
+            cpu: 100m
             memory: 512Mi
 ---
 apiVersion: apps/v1
@@ -548,10 +561,10 @@ spec:
             command: ["/bin/grpc_health_probe", "-addr=:7000"]
         resources:
           requests:
-            cpu: 100m
+            cpu: 50m
             memory: 64Mi
           limits:
-            cpu: 200m
+            cpu: 100m
             memory: 128Mi
 ---
 apiVersion: v1
@@ -607,10 +620,10 @@ spec:
             command: ["/bin/grpc_health_probe", "-addr=:50051"]
         resources:
           requests:
-            cpu: 100m
+            cpu: 50m
             memory: 64Mi
           limits:
-            cpu: 200m
+            cpu: 100m
             memory: 128Mi
 ---
 apiVersion: v1
@@ -625,7 +638,7 @@ spec:
   - name: grpc
     port: 50051
     targetPort: 50051
-    nodePort: 30008  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
+    nodePort: 30008  
 
 ---
 apiVersion: apps/v1
@@ -660,9 +673,9 @@ spec:
         resources:
           limits:
             memory: 256Mi
-            cpu: 125m
+            cpu: 100m
           requests:
-            cpu: 70m
+            cpu: 50m
             memory: 200Mi
       volumes:
       - name: redis-data
@@ -680,7 +693,7 @@ spec:
   - name: redis
     port: 6379
     targetPort: 6379
-    nodePort: 30009  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
+    nodePort: 30009  
 
 ---
 apiVersion: apps/v1
@@ -714,10 +727,10 @@ spec:
         #  value: "jaeger-collector:14268"
         resources:
           requests:
-            cpu: 200m
+            cpu: 50m
             memory: 180Mi
           limits:
-            cpu: 300m
+            cpu: 100m
             memory: 300Mi
         readinessProbe:
           initialDelaySeconds: 20
