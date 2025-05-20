@@ -64,18 +64,13 @@ kind: Service
 metadata:
   name: emailservice
 spec:
-  type: NodePort
+  type: ClusterIP  # Đổi từ NodePort sang ClusterIP
   selector:
     app: emailservice
-  ipFamilyPolicy: RequireDualStack
-  ipFamilies:
-    - IPv6
-    - IPv4
   ports:
   - name: grpc
-    port: 5000
-    targetPort: 8080
-    nodePort: 30000  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
+    port: 5000     # Port service sẽ lắng nghe trong cluster
+    targetPort: 8080  # Port trên Pod  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
 
 ---
 apiVersion: apps/v1
@@ -139,18 +134,14 @@ kind: Service
 metadata:
   name: checkoutservice
 spec:
-  type: NodePort
+  type: ClusterIP  # Changed from NodePort to ClusterIP
   selector:
     app: checkoutservice
-  ipFamilyPolicy: RequireDualStack
-  ipFamilies:
-    - IPv6
-    - IPv4
   ports:
   - name: grpc
-    port: 5050
-    targetPort: 5050
-    nodePort: 30001  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
+    port: 5050      # Service port (cluster-internal)
+    targetPort: 5050  # Pod port
+    # Removed nodePort as it's not needed for ClusterIP  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -203,18 +194,13 @@ kind: Service
 metadata:
   name: recommendationservice
 spec:
-  type: NodePort
+  type: ClusterIP  
   selector:
     app: recommendationservice
-  ipFamilyPolicy: RequireDualStack
-  ipFamilies:
-    - IPv6
-    - IPv4
   ports:
   - name: grpc
     port: 8080
     targetPort: 8080
-    nodePort: 30002  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
 
 ---
 apiVersion: apps/v1
@@ -299,7 +285,7 @@ spec:
 #   - name: http
 #     port: 80
 #     targetPort: 8080
-#     nodePort: 30003  
+#     nodePort: 30003  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
 
 #---
 #apiVersion: v1
@@ -314,7 +300,6 @@ spec:
 #  - name: http
 #    port: 80
 #    targetPort: 8080
-
 apiVersion: v1
 kind: Service
 metadata:
@@ -322,14 +307,13 @@ metadata:
 spec:
   selector:
     app: frontend
-  ipFamilyPolicy: RequireDualStack
-  ipFamilies:
-    - IPv6
-    - IPv4
   ports:
     - protocol: TCP
       port: 80
       targetPort: 8080  # hoặc cổng bạn expose trong container
+    - protocol: TCP
+      port: 443          # HTTPS - Cloudflare sẽ truy cập qua đây
+      targetPort: 8443
   type: LoadBalancer
 
 
@@ -376,18 +360,13 @@ kind: Service
 metadata:
   name: paymentservice
 spec:
-  type: NodePort
+  type: ClusterIP  
   selector:
     app: paymentservice
-  ipFamilyPolicy: RequireDualStack
-  ipFamilies:
-    - IPv6
-    - IPv4
   ports:
   - name: grpc
     port: 50051
     targetPort: 50051
-    nodePort: 30004  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
 
 ---
 apiVersion: apps/v1
@@ -440,18 +419,13 @@ kind: Service
 metadata:
   name: productcatalogservice
 spec:
-  type: NodePort
+  type: ClusterIP  
   selector:
     app: productcatalogservice
-  ipFamilyPolicy: RequireDualStack
-  ipFamilies:
-    - IPv6
-    - IPv4
   ports:
   - name: grpc
     port: 3550
     targetPort: 3550
-    nodePort: 30005  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
 
 ---
 apiVersion: apps/v1
@@ -503,18 +477,13 @@ kind: Service
 metadata:
   name: cartservice
 spec:
-  type: NodePort
+  type: ClusterIP  
   selector:
     app: cartservice
-  ipFamilyPolicy: RequireDualStack
-  ipFamilies:
-    - IPv6
-    - IPv4
   ports:
   - name: grpc
     port: 7070
     targetPort: 7070
-    nodePort: 30006  
 
 ---
 apiVersion: apps/v1
@@ -601,18 +570,13 @@ kind: Service
 metadata:
   name: currencyservice
 spec:
-  type: NodePort
+  type: ClusterIP  
   selector:
     app: currencyservice
-  ipFamilyPolicy: RequireDualStack
-  ipFamilies:
-    - IPv6
-    - IPv4
   ports:
   - name: grpc
     port: 7000
     targetPort: 7000
-    nodePort: 30007  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
 
 ---
 apiVersion: apps/v1
@@ -664,18 +628,13 @@ kind: Service
 metadata:
   name: shippingservice
 spec:
-  type: NodePort
+  type: ClusterIP  
   selector:
     app: shippingservice
-  ipFamilyPolicy: RequireDualStack
-  ipFamilies:
-    - IPv6
-    - IPv4
   ports:
   - name: grpc
     port: 50051
     targetPort: 50051
-    nodePort: 30008  
 
 ---
 apiVersion: apps/v1
@@ -723,18 +682,13 @@ kind: Service
 metadata:
   name: redis-cart
 spec:
-  type: NodePort
+  type: ClusterIP  
   selector:
     app: redis-cart
-  ipFamilyPolicy: RequireDualStack
-  ipFamilies:
-    - IPv6
-    - IPv4
   ports:
   - name: redis
     port: 6379
     targetPort: 6379
-    nodePort: 30009  
 
 ---
 apiVersion: apps/v1
@@ -789,17 +743,12 @@ kind: Service
 metadata:
   name: adservice
 spec:
-  type: NodePort
+  type: ClusterIP  
   selector:
     app: adservice
-  ipFamilyPolicy: RequireDualStack
-  ipFamilies:
-    - IPv6
-    - IPv4
   ports:
   - name: grpc
     port: 9555
     targetPort: 9555
-    nodePort: 30010  # Chọn một cổng trong khoảng 30000-32767 (hoặc để Kubernetes tự chọn)
 
 ---
