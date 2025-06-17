@@ -24,7 +24,7 @@ steps:
           --num-nodes=3 \
           --machine-type=e2-medium \
           --network=${_VPC_NAME} \
-          --create-subnetwork=name=${_SUBNET_NAME},range=192.168.1.0/24,stack-type=IPV4_IPV6,ipv6-access-type=EXTERNAL \
+          --create-subnetwork=name=${_SUBNET_NAME},range=192.168.1.0/24 \
           --project=${_PROJECT_ID}
 
   # Step 1: Get credentials for GKE
