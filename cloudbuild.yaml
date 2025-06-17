@@ -1,24 +1,4 @@
 steps:
-  # Step 0: Gán quyền container.admin cho Cloud Build service account hi
-  - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'Enable Required APIs'
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        gcloud services enable cloudresourcemanager.googleapis.com \
-        container.googleapis.com compute.googleapis.com
-
-  - name: 'gcr.io/cloud-builders/gcloud'
-    id: 'Grant IAM Role'
-    entrypoint: bash
-    args:
-      - -c
-      - |
-        gcloud projects add-iam-policy-binding ${_PROJECT_ID} \
-          --member="serviceAccount:${_PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
-          --role="roles/container.admin"
-
   # Step 1: Tạo GKE cluster Dual-stack
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'Create Dual-Stack GKE Cluster'
@@ -63,8 +43,6 @@ steps:
 options:
   logging: CLOUD_LOGGING_ONLY
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
-
-# Substitution variables (có thể set trong trigger hoặc chạy thủ công)
 
 substitutions:
   _PROJECT_ID: your-project-id
