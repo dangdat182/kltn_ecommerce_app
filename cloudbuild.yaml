@@ -1,7 +1,6 @@
 steps:
-  # Step 0: Cài gcloud CLI bản mới nhất và tạo GKE Dual-Stack Cluster
   - name: 'google/cloud-sdk:slim'
-    id: 'Create Dual-Stack GKE Cluster'
+    id: 'Upgrade gcloud'
     entrypoint: bash
     args:
       - -c
@@ -11,13 +10,13 @@ steps:
         tar -xzf google-cloud-sdk-475.0.0-linux-x86_64.tar.gz
         ./google-cloud-sdk/install.sh --quiet
         ./google-cloud-sdk/bin/gcloud components install kubectl --quiet
-
+        ./google-cloud-sdk/bin/gcloud version
         ./google-cloud-sdk/bin/gcloud container clusters create ${_CLUSTER_NAME} \
           --region=${_REGION} \
           --release-channel=regular \
           --stack-type=ipv4-ipv6 \
           --datapath-provider=ADVANCED_DATAPATH \
-          --ipv6-access-type=EXTERNAL \
+          --ipv6-access-type=external \
           --enable-private-nodes \
           --enable-ip-alias \
           --num-nodes=3 \
@@ -26,17 +25,35 @@ steps:
           --subnetwork=${_SUBNET_NAME} \
           --project=${_PROJECT_ID}
 
-        # Lấy credentials để dùng kubectl mới
-        ./google-cloud-sdk/bin/gcloud container clusters get-credentials ${_CLUSTER_NAME} \
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Get GKE Credentials'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud container clusters get-credentials ${_CLUSTER_NAME} \
           --region ${_REGION} \
           --project ${_PROJECT_ID}
 
-        # Apply các manifest Dual-Stack
-        ./google-cloud-sdk/bin/kubectl apply -f kltn_ecommerce_app/release/kubernetes-manifests_dualstack.yaml
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Deploy App Services'
+    args:
+      - apply
+      - '-f'
+      - 'kltn_ecommerce_app/release/kubernetes-manifests_dualstack.yaml'
 
-        # Triển khai Prometheus + Grafana
-        chmod +x kltn_ecommerce_app/release/auto_deploy_monitor.sh
-        ./kltn_ecommerce_app/release/auto_deploy_monitor.sh
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Deploy Monitoring Stack'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        if [ -f kltn_ecommerce_app/release/auto_deploy_monitor.sh ]; then
+          chmod +x kltn_ecommerce_app/release/auto_deploy_monitor.sh
+          ./kltn_ecommerce_app/release/auto_deploy_monitor.sh
+        else
+          echo "Monitor script not found, skipping..."
+        fi
 
 options:
   logging: CLOUD_LOGGING_ONLY
