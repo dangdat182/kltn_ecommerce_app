@@ -51,7 +51,12 @@ steps:
       - '-f'
       - .
 
+options:
+  logging: CLOUD_LOGGING_ONLY
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+
 # Substitution variables (có thể set trong trigger hoặc chạy thủ công)
+
 substitutions:
   _PROJECT_ID: your-project-id
   _PROJECT_NUMBER: your-project-number
