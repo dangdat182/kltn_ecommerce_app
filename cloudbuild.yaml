@@ -1,5 +1,5 @@
 steps:
-  # Step 0: Gán quyền container.admin cho Cloud Build service account hello
+  # Step 0: Gán quyền container.admin cho Cloud Build service account hi
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'Grant IAM Role'
     entrypoint: bash
