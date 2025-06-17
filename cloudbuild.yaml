@@ -12,19 +12,6 @@ steps:
         ./google-cloud-sdk/install.sh --quiet
         ./google-cloud-sdk/bin/gcloud components install kubectl --quiet
         ./google-cloud-sdk/bin/gcloud version
-
-        # Tạo subnet dualstack-subnet1 nếu chưa có
-        ./google-cloud-sdk/bin/gcloud compute networks subnets create dualstack-subnet1 \
-          --network=${_VPC_NAME} \
-          --region=${_REGION} \
-          --stack-type=ipv4-ipv6 \
-          --ipv6-access-type=external \
-          --range=192.168.1.0/24 \
-          --enable-private-ip-google-access \
-          --ipv6-range=2600:1900:4000:c6a7::/64 \
-          --ipv6-access-type=EXTERNAL \
-          --secondary-range gke-pods-range1=10.214.0.0/14 || echo "Subnet already exists"
-
         # Tạo GKE cluster Dual-Stack
         ./google-cloud-sdk/bin/gcloud container clusters create ${_CLUSTER_NAME} \
           --region=${_REGION} \
@@ -37,7 +24,7 @@ steps:
           --num-nodes=3 \
           --machine-type=e2-medium \
           --network=${_VPC_NAME} \
-          --subnetwork=dualstack-subnet1 \
+          --create-subnetwork=name=${_SUBNET_NAME},range=192.168.1.0/24,stack-type=IPV4_IPV6,ipv6-access-type=EXTERNAL \
           --project=${_PROJECT_ID}
 
   # Step 1: Get credentials for GKE
