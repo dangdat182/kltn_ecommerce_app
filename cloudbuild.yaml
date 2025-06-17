@@ -15,7 +15,7 @@ steps:
           --region=${_REGION} \
           --release-channel=regular \
           --stack-type=ipv4-ipv6 \
-          --datapath-provider=ADVANCED_DATAPATH \
+          --enable-dataplane-v2 \
           --ipv6-access-type=external \
           --enable-private-nodes \
           --enable-ip-alias \
