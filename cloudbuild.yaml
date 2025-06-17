@@ -52,9 +52,9 @@ options:
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
 
 substitutions:
-  _PROJECT_ID: your-project-id
-  _PROJECT_NUMBER: your-project-number
-  _CLUSTER_NAME: ecommerce-cluster
+  _PROJECT_ID: devops-gcp-456308
+  _PROJECT_NUMBER: 343668063209
+  _CLUSTER_NAME: ecommerce-cluster1
   _REGION: us-central1
   _VPC_NAME: myvpc
   _SUBNET_NAME: dualstack-subnet
