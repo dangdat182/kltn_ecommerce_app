@@ -1,12 +1,18 @@
 steps:
-  # Step 1: Tạo GKE cluster Dual-stack
-  - name: 'google/cloud-sdk:latest'
-    id: 'Create Dual-Stack GKE Cluster'
+  # Step 0: Upgrade gcloud CLI
+  - name: 'google/cloud-sdk:slim'
+    id: 'Upgrade gcloud'
     entrypoint: bash
     args:
       - -c
       - |
-        gcloud container clusters create ${_CLUSTER_NAME} \
+        apt-get update && apt-get install -y curl python3-distutils
+        curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-475.0.0-linux-x86_64.tar.gz
+        tar -xzf google-cloud-sdk-475.0.0-linux-x86_64.tar.gz
+        ./google-cloud-sdk/install.sh --quiet
+        ./google-cloud-sdk/bin/gcloud components install kubectl --quiet
+        ./google-cloud-sdk/bin/gcloud version
+        ./google-cloud-sdk/bin/gcloud container clusters create ${_CLUSTER_NAME} \
           --region=${_REGION} \
           --release-channel=regular \
           --stack-type=ipv4-ipv6 \
