@@ -9,7 +9,7 @@ steps:
         gcloud container clusters create ${_CLUSTER_NAME} \
           --region=${_REGION} \
           --release-channel=regular \
-          --stack-type=ipv4-ipv6 \   
+          --stack-type=ipv4-ipv6 \
           --enable-private-nodes \
           --enable-ip-alias \
           --create-subnetwork="" \
