@@ -1,6 +1,6 @@
 steps:
   # Step 1: Tạo GKE cluster Dual-stack
-  - name: 'gcr.io/cloud-builders/gcloud'
+  - name: 'google/cloud-sdk:latest'
     id: 'Create Dual-Stack GKE Cluster'
     entrypoint: bash
     args:
