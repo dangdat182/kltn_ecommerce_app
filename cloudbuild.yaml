@@ -12,14 +12,13 @@ steps:
           --stack-type=ipv4-ipv6 \
           --enable-private-nodes \
           --enable-ip-alias \
-          --create-subnetwork="" \
           --num-nodes=3 \
           --machine-type=e2-medium \
           --network=${_VPC_NAME} \
           --subnetwork=${_SUBNET_NAME} \
           --project=${_PROJECT_ID}
 
-  # Step 2: Lấy credentials để kubectl apply
+  # Step 2: Lấy credentials để apply
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'Get GKE Credentials'
     entrypoint: bash
@@ -30,14 +29,23 @@ steps:
           --region ${_REGION} \
           --project ${_PROJECT_ID}
 
-  # Step 3: Triển khai YAML
+  # Step 3: Triển khai các service trong manifest dualstack
   - name: 'gcr.io/cloud-builders/kubectl'
-    id: 'Deploy to GKE'
-    dir: k8s
+    id: 'Deploy App Services'
     args:
       - apply
       - '-f'
-      - .
+      - 'kltn_ecommerce_app/release/kubernetes-manifests_dualstack.yaml'
+
+  # Step 4: Deploy hệ thống Monitoring (Prometheus + Grafana)
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Deploy Monitoring Stack'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        chmod +x kltn_ecommerce_app/release/auto_deploy_monitor.sh
+        ./kltn_ecommerce_app/release/auto_deploy_monitor.sh
 
 options:
   logging: CLOUD_LOGGING_ONLY
