@@ -1,0 +1,61 @@
+steps:
+  # Step 0: Gán quyền container.admin cho Cloud Build service account
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Grant IAM Role'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud projects add-iam-policy-binding ${_PROJECT_ID} \
+          --member="serviceAccount:${_PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+          --role="roles/container.admin"
+
+  # Step 1: Tạo GKE cluster Dual-stack
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Create Dual-Stack GKE Cluster'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud container clusters create ${_CLUSTER_NAME} \
+          --region=${_REGION} \
+          --release-channel=regular \
+          --enable-ipv6 \
+          --stack-type=IPV4_IPV6 \
+          --enable-private-nodes \
+          --enable-ip-alias \
+          --create-subnetwork="" \
+          --num-nodes=3 \
+          --machine-type=e2-medium \
+          --network=${_VPC_NAME} \
+          --subnetwork=${_SUBNET_NAME} \
+          --project=${_PROJECT_ID}
+
+  # Step 2: Lấy credentials để kubectl apply
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Get GKE Credentials'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud container clusters get-credentials ${_CLUSTER_NAME} \
+          --region ${_REGION} \
+          --project ${_PROJECT_ID}
+
+  # Step 3: Triển khai YAML
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Deploy to GKE'
+    dir: k8s
+    args:
+      - apply
+      - '-f'
+      - .
+
+# Substitution variables (có thể set trong trigger hoặc chạy thủ công)
+substitutions:
+  _PROJECT_ID: your-project-id
+  _PROJECT_NUMBER: your-project-number
+  _CLUSTER_NAME: ecommerce-cluster
+  _REGION: us-central1
+  _VPC_NAME: myvpc
+  _SUBNET_NAME: dualstack-subnet
