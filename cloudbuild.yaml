@@ -10,6 +10,7 @@ steps:
           --region=${_REGION} \
           --release-channel=regular \
           --stack-type=ipv4-ipv6 \
+          --datapath-provider=ADVANCED_DATAPATH \
           --enable-private-nodes \
           --enable-ip-alias \
           --num-nodes=3 \
