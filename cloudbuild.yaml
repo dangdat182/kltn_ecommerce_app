@@ -29,7 +29,8 @@ steps:
         ./google-cloud-sdk/bin/gcloud container clusters create ${_CLUSTER_NAME} \
           --region=${_REGION} \
           --release-channel=regular \
-          --stack-type=IPV4_IPV6 \
+          --stack-type=ipv4-ipv6 \
+          --ipv6-access-type=external \
           --enable-dataplane-v2 \
           --enable-private-nodes \
           --enable-ip-alias \
