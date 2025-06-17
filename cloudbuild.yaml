@@ -1,6 +1,7 @@
 steps:
+  # Step 0: Upgrade gcloud CLI + Tạo subnet dualstack-subnet1
   - name: 'google/cloud-sdk:slim'
-    id: 'Upgrade gcloud'
+    id: 'Setup Gcloud + Subnet'
     entrypoint: bash
     args:
       - -c
@@ -11,20 +12,34 @@ steps:
         ./google-cloud-sdk/install.sh --quiet
         ./google-cloud-sdk/bin/gcloud components install kubectl --quiet
         ./google-cloud-sdk/bin/gcloud version
+
+        # Tạo subnet dualstack-subnet1 nếu chưa có
+        ./google-cloud-sdk/bin/gcloud compute networks subnets create dualstack-subnet1 \
+          --network=${_VPC_NAME} \
+          --region=${_REGION} \
+          --stack-type=ipv4-ipv6 \
+          --ipv6-access-type=external \
+          --range=192.168.1.0/24 \
+          --enable-private-ip-google-access \
+          --ipv6-range=2600:1900:4000:c6a7::/64 \
+          --ipv6-access-type=EXTERNAL \
+          --secondary-range gke-pods-range1=10.214.0.0/14 || echo "Subnet already exists"
+
+        # Tạo GKE cluster Dual-Stack
         ./google-cloud-sdk/bin/gcloud container clusters create ${_CLUSTER_NAME} \
           --region=${_REGION} \
           --release-channel=regular \
-          --stack-type=ipv4-ipv6 \
+          --stack-type=IPV4_IPV6 \
           --enable-dataplane-v2 \
-          --ipv6-access-type=external \
           --enable-private-nodes \
           --enable-ip-alias \
           --num-nodes=3 \
           --machine-type=e2-medium \
           --network=${_VPC_NAME} \
-          --subnetwork=${_SUBNET_NAME} \
+          --subnetwork=dualstack-subnet1 \
           --project=${_PROJECT_ID}
 
+  # Step 1: Get credentials for GKE
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'Get GKE Credentials'
     entrypoint: bash
@@ -35,6 +50,7 @@ steps:
           --region ${_REGION} \
           --project ${_PROJECT_ID}
 
+  # Step 2: Deploy App Services
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Deploy App Services'
     args:
@@ -42,6 +58,7 @@ steps:
       - '-f'
       - 'kltn_ecommerce_app/release/kubernetes-manifests_dualstack.yaml'
 
+  # Step 3: Deploy Monitoring Stack (Prometheus + Grafana)
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Deploy Monitoring Stack'
     entrypoint: bash
@@ -65,4 +82,4 @@ substitutions:
   _CLUSTER_NAME: ecommerce-cluster1
   _REGION: us-central1
   _VPC_NAME: myvpc
-  _SUBNET_NAME: dualstack-subnet
+  _SUBNET_NAME: dualstack-subnet1
