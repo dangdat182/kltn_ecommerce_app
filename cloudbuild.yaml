@@ -24,7 +24,7 @@ steps:
           --enable-ip-alias \
           --num-nodes=2 \
           --machine-type=e2-medium \
-          --disk-size=10 \
+          --disk-size=7 \
           --network=${_VPC_NAME} \
           --create-subnetwork=name=${_SUBNET_NAME},range=192.168.1.0/24 \
           --project=${_PROJECT_ID}
