@@ -82,5 +82,5 @@ substitutions:
   _CLUSTER_NAME: ecommerce-cluster1
 # _REGION: us-central1
   _VPC_NAME: myvpc
-  _SUBNET_NAME: dualstack-subnet
+  _SUBNET_NAME: dualstack-subnet1
   _ZONE: us-central1-c
