@@ -30,6 +30,25 @@ steps:
           --network=${_VPC_NAME} \
           --create-subnetwork=name=${_SUBNET_NAME},range=192.168.1.0/24 \
           --project=${_PROJECT_ID}
+          
+        echo "🕒 Đợi cluster và node pool sẵn sàng..."
+        until ./google-cloud-sdk/bin/gcloud container clusters describe ${_CLUSTER_NAME} \
+            --zone ${_ZONE} --project ${_PROJECT_ID} \
+            | grep -q "status: RUNNING"; do
+          echo "⏳ Cluster chưa sẵn sàng, chờ 10s..."
+          sleep 10
+        done
+
+        # Kiểm tra node đã hoạt động chưa
+        ./google-cloud-sdk/bin/gcloud container clusters get-credentials ${_CLUSTER_NAME} \
+          --zone ${_ZONE} --project ${_PROJECT_ID} --internal-ip
+
+        until ./google-cloud-sdk/bin/kubectl get nodes 2>/dev/null | grep -q ' Ready '; do
+          echo "⏳ Node chưa sẵn sàng, chờ thêm 10s..."
+          sleep 10
+        done
+
+        echo "✅ Cluster và node đã sẵn sàng để triển khai!"
 
   # Step 1: Get credentials for GKE
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -40,7 +59,7 @@ steps:
       - |
         gcloud container clusters get-credentials ${_CLUSTER_NAME} \
           --zone ${_ZONE} \
-          --project ${_PROJECT_ID}
+          --project ${_PROJECT_ID} \
           --internal-ip
 
   # Step 2: Deploy App Services
