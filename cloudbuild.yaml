@@ -22,9 +22,11 @@ steps:
           --enable-dataplane-v2 \
           --enable-private-nodes \
           --enable-ip-alias \
-          --num-nodes=2 \
+          --num-nodes=3 \
           --machine-type=e2-medium \
-          --disk-size=7 \
+          --disk-size=30 \
+          --image-type=UBUNTU_CONTAINERD \
+          --boot-disk-type=pd-balanced \
           --network=${_VPC_NAME} \
           --create-subnetwork=name=${_SUBNET_NAME},range=192.168.1.0/24 \
           --project=${_PROJECT_ID}
