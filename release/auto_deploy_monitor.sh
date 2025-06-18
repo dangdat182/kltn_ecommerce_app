@@ -1,4 +1,12 @@
 #!/bin/bash
+# Install Helm
+set -e
+LATEST_VERSION=$(curl -s https://api.github.com/repos/helm/helm/releases/latest | grep '"tag_name":' | cut -d'"' -f4)
+curl -LO https://get.helm.sh/helm-${LATEST_VERSION}-linux-amd64.tar.gz
+tar -zxvf helm-${LATEST_VERSION}-linux-amd64.tar.gz
+sudo mv linux-amd64/helm /usr/local/bin/helm
+rm -rf linux-amd64 helm-${LATEST_VERSION}-linux-amd64.tar.gz
+helm version
 
 # Tạo namespace
 kubectl create namespace monitoring
