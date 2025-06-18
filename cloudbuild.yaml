@@ -52,7 +52,7 @@ steps:
     args:
       - apply
       - '-f'
-      - 'kltn_ecommerce_app/release/kubernetes-manifests_dualstack.yaml'
+      - 'release/kubernetes-manifests_dualstack.yaml'
 
   # Step 3: Deploy Monitoring Stack (Prometheus + Grafana)
   - name: 'gcr.io/cloud-builders/kubectl'
@@ -65,9 +65,9 @@ steps:
     args:
       - -c
       - |
-        if [ -f kltn_ecommerce_app/release/auto_deploy_monitor.sh ]; then
-          chmod +x kltn_ecommerce_app/release/auto_deploy_monitor.sh
-          ./kltn_ecommerce_app/release/auto_deploy_monitor.sh
+        if [ -f release/auto_deploy_monitor.sh ]; then
+          chmod +x release/auto_deploy_monitor.sh
+          ./release/auto_deploy_monitor.sh
         else
           echo "Monitor script not found, skipping..."
         fi
