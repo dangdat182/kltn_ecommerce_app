@@ -14,14 +14,13 @@ steps:
         ./google-cloud-sdk/bin/gcloud version
           
         # Tạo GKE cluster Dual-Stack
-        op_name=$(./google-cloud-sdk/bin/gcloud beta container clusters create ${_CLUSTER_NAME} \
+        ./google-cloud-sdk/bin/gcloud container clusters create ${_CLUSTER_NAME} \
           --zone=${_ZONE} \
           --release-channel=regular \
           --stack-type=ipv4-ipv6 \
           --ipv6-access-type=external \
           --enable-dataplane-v2 \
-          --enable-master-authorized-networks \
-          --master-authorized-networks=0.0.0.0/0 \
+          --enable-private-nodes \
           --enable-ip-alias \
           --num-nodes=3 \
           --machine-type=e2-medium \
@@ -30,30 +29,7 @@ steps:
           --disk-type=pd-balanced \
           --network=${_VPC_NAME} \
           --create-subnetwork=name=${_SUBNET_NAME},range=192.168.1.0/24 \
-          --project=${_PROJECT_ID} \
-          --format="value(name)")
-
-        echo "Waiting for cluster creation to complete..."
-        ./google-cloud-sdk/bin/gcloud container operations wait "$op_name" --zone=${_ZONE}
-          
-        echo "🕒 Đợi cluster và node pool sẵn sàng..."
-        until ./google-cloud-sdk/bin/gcloud container clusters describe ${_CLUSTER_NAME} \
-            --zone ${_ZONE} --project ${_PROJECT_ID} \
-            | grep -q "status: RUNNING"; do
-          echo "⏳ Cluster chưa sẵn sàng, chờ 10s..."
-          sleep 10
-        done
-
-        # Kiểm tra node đã hoạt động chưa
-        ./google-cloud-sdk/bin/gcloud container clusters get-credentials ${_CLUSTER_NAME} \
-          --zone ${_ZONE} --project ${_PROJECT_ID}
-
-        until ./google-cloud-sdk/bin/kubectl get nodes 2>/dev/null | grep -q ' Ready '; do
-          echo "⏳ Node chưa sẵn sàng, chờ thêm 10s..."
-          sleep 10
-        done
-
-        echo "✅ Cluster và node đã sẵn sàng để triển khai!"
+          --project=${_PROJECT_ID}
 
   # Step 1: Get credentials for GKE
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -64,7 +40,7 @@ steps:
       - |
         gcloud container clusters get-credentials ${_CLUSTER_NAME} \
           --zone ${_ZONE} \
-          --project ${_PROJECT_ID} \
+          --project ${_PROJECT_ID}
 
   # Step 2: Deploy App Services
   - name: 'gcr.io/cloud-builders/kubectl'
