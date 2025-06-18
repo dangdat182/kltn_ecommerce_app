@@ -15,7 +15,7 @@ steps:
           
         # Tạo GKE cluster Dual-Stack
         ./google-cloud-sdk/bin/gcloud container clusters create ${_CLUSTER_NAME} \
-          --region=${_REGION} \
+          --zone=${_ZONE} \
           --release-channel=regular \
           --stack-type=ipv4-ipv6 \
           --ipv6-access-type=external \
@@ -26,7 +26,7 @@ steps:
           --machine-type=e2-medium \
           --disk-size=30 \
           --image-type=UBUNTU_CONTAINERD \
-          --disk-type=pd-balanced \
+          --boot-disk-type=pd-balanced \
           --network=${_VPC_NAME} \
           --create-subnetwork=name=${_SUBNET_NAME},range=192.168.1.0/24 \
           --project=${_PROJECT_ID}
@@ -39,7 +39,7 @@ steps:
       - -c
       - |
         gcloud container clusters get-credentials ${_CLUSTER_NAME} \
-          --region ${_REGION} \
+          --zone ${_ZONE} \
           --project ${_PROJECT_ID}
 
   # Step 2: Deploy App Services
@@ -72,6 +72,7 @@ substitutions:
   _PROJECT_ID: devops-gcp-456308
   _PROJECT_NUMBER: "343668063209"
   _CLUSTER_NAME: ecommerce-cluster1
-  _REGION: us-central1
+# _REGION: us-central1
   _VPC_NAME: myvpc
   _SUBNET_NAME: dualstack-subnet1
+  _ZONE: us-central1-c
