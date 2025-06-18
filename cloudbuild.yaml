@@ -20,7 +20,7 @@ steps:
           --stack-type=ipv4-ipv6 \
           --ipv6-access-type=external \
           --enable-dataplane-v2 \
-          --enable-private-nodes \
+          --master-authorized-networks=0.0.0.0/0 \
           --enable-ip-alias \
           --num-nodes=3 \
           --machine-type=e2-medium \
