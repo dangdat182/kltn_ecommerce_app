@@ -54,7 +54,7 @@ steps:
       - 'release/kubernetes-manifests_dualstack.yaml'
 
   # Step 3: Deploy Monitoring Stack (Prometheus + Grafana)
-  - name: 'gcr.io/cloud-builders/kubectl'
+  - name: 'ubuntu:22.04'
     id: 'Deploy Monitoring Stack'
     env:
       - CLOUDSDK_COMPUTE_ZONE=${_ZONE}
@@ -64,12 +64,10 @@ steps:
     args:
       - -c
       - |
-        if [ -f release/auto_deploy_monitor.sh ]; then
-          chmod +x release/auto_deploy_monitor.sh
-          ./release/auto_deploy_monitor.sh
-        else
-          echo "Monitor script not found, skipping..."
-        fi
+        apt update && apt install -y curl tar
+        cd release
+        chmod +x auto_deploy_monitor.sh
+        ./auto_deploy_monitor.sh
 
 options:
   logging: CLOUD_LOGGING_ONLY
