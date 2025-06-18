@@ -12,12 +12,6 @@ steps:
         ./google-cloud-sdk/install.sh --quiet
         ./google-cloud-sdk/bin/gcloud components install kubectl --quiet
         ./google-cloud-sdk/bin/gcloud version
-
-        # ✅ Cấp quyền serviceAccountUser cho Cloud Build SA
-        ./google-cloud-sdk/bin/gcloud iam service-accounts add-iam-policy-binding 343668063209-compute@developer.gserviceaccount.com \
-          --member="serviceAccount:343668063209@cloudbuild.gserviceaccount.com" \
-          --role="roles/iam.serviceAccountUser" \
-          --project=devops-gcp-456308
           
         # Tạo GKE cluster Dual-Stack
         ./google-cloud-sdk/bin/gcloud container clusters create ${_CLUSTER_NAME} \
