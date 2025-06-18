@@ -52,7 +52,6 @@ steps:
       - apply
       - '-f'
       - 'release/kubernetes-manifests_dualstack.yaml'
-      - '--validate=false'
 
   # Step 3: Deploy Monitoring Stack (Prometheus + Grafana)
   - name: 'gcr.io/cloud-builders/kubectl'
