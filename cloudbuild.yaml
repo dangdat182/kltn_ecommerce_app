@@ -54,7 +54,7 @@ steps:
       - 'release/kubernetes-manifests_dualstack.yaml'
 
   # Step 3: Deploy Monitoring Stack (Prometheus + Grafana)
-  - name: 'google/cloud-sdk:slim'
+  - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Deploy Monitoring Stack'
     env:
       - CLOUDSDK_COMPUTE_ZONE=${_ZONE}
