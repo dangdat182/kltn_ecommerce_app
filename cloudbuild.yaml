@@ -20,7 +20,6 @@ steps:
           --stack-type=ipv4-ipv6 \
           --ipv6-access-type=external \
           --enable-dataplane-v2 \
-          --enable-private-nodes \
           --enable-ip-alias \
           --num-nodes=3 \
           --machine-type=e2-medium \
@@ -53,6 +52,7 @@ steps:
       - apply
       - '-f'
       - 'release/kubernetes-manifests_dualstack.yaml'
+      - '--validate=false'
 
   # Step 3: Deploy Monitoring Stack (Prometheus + Grafana)
   - name: 'gcr.io/cloud-builders/kubectl'
@@ -82,5 +82,5 @@ substitutions:
   _CLUSTER_NAME: ecommerce-cluster1
 # _REGION: us-central1
   _VPC_NAME: myvpc
-  _SUBNET_NAME: dualstack-subnet1
+  _SUBNET_NAME: dualstack-subnet
   _ZONE: us-central1-c
