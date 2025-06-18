@@ -14,7 +14,7 @@ steps:
         ./google-cloud-sdk/bin/gcloud version
           
         # Tạo GKE cluster Dual-Stack
-        ./google-cloud-sdk/bin/gcloud container clusters create ${_CLUSTER_NAME} \
+        op_name=$(./google-cloud-sdk/bin/gcloud container clusters create ${_CLUSTER_NAME} \
           --zone=${_ZONE} \
           --release-channel=regular \
           --stack-type=ipv4-ipv6 \
@@ -29,7 +29,11 @@ steps:
           --disk-type=pd-balanced \
           --network=${_VPC_NAME} \
           --create-subnetwork=name=${_SUBNET_NAME},range=192.168.1.0/24 \
-          --project=${_PROJECT_ID}
+          --project=${_PROJECT_ID} \
+          --format="value(name)")
+
+        echo "Waiting for cluster creation to complete..."
+        ./google-cloud-sdk/bin/gcloud container operations wait "$op_name" --zone=${_ZONE}
           
         echo "🕒 Đợi cluster và node pool sẵn sàng..."
         until ./google-cloud-sdk/bin/gcloud container clusters describe ${_CLUSTER_NAME} \
