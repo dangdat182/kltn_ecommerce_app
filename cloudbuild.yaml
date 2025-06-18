@@ -45,6 +45,10 @@ steps:
   # Step 2: Deploy App Services
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Deploy App Services'
+    env:
+      - CLOUDSDK_COMPUTE_ZONE=${_ZONE}
+      - CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}
+      - CLOUDSDK_CORE_PROJECT=${_PROJECT_ID}
     args:
       - apply
       - '-f'
@@ -53,6 +57,10 @@ steps:
   # Step 3: Deploy Monitoring Stack (Prometheus + Grafana)
   - name: 'gcr.io/cloud-builders/kubectl'
     id: 'Deploy Monitoring Stack'
+    env:
+      - CLOUDSDK_COMPUTE_ZONE=${_ZONE}
+      - CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}
+      - CLOUDSDK_CORE_PROJECT=${_PROJECT_ID}
     entrypoint: bash
     args:
       - -c
