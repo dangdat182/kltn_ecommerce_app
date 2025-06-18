@@ -8,7 +8,7 @@ tar -zxvf helm-${LATEST_VERSION}-linux-amd64.tar.gz
 chmod +x linux-amd64/helm
 export PATH=$PATH:$(pwd)/linux-amd64  # Thêm helm vào PATH tạm thời
 helm version
-
+echo "Install helm done"
 # Tạo namespace
 kubectl create namespace monitoring || true
 
