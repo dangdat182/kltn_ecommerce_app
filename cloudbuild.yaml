@@ -54,7 +54,7 @@ steps:
       - 'release/kubernetes-manifests_dualstack.yaml'
 
   # Step 3: Deploy Monitoring Stack (Prometheus + Grafana)
-  - name: 'ubuntu:22.04'
+  - name: 'google/cloud-sdk:slim'
     id: 'Deploy Monitoring Stack'
     env:
       - CLOUDSDK_COMPUTE_ZONE=${_ZONE}
@@ -64,7 +64,7 @@ steps:
     args:
       - -c
       - |
-        apt update && apt install -y curl tar
+        apt-get update && apt-get install -y curl tar
         cd release
         chmod +x auto_deploy_monitor.sh
         ./auto_deploy_monitor.sh
