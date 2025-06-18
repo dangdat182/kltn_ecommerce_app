@@ -325,9 +325,11 @@ spec:
     - IPv4
   ports:
     - protocol: TCP
+      name: http
       port: 80
       targetPort: 8080  # hoặc cổng bạn expose trong container
     - protocol: TCP
+      name: https
       port: 443          # HTTPS - Cloudflare sẽ truy cập qua đây
       targetPort: 8443
   type: LoadBalancer
