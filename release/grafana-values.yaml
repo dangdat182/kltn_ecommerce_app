@@ -8,10 +8,8 @@ adminPassword: admin
 service:
   type: LoadBalancer
 
-# Ghi lại để dễ nhớ pod/service
 fullnameOverride: grafana
 
-# Mở dashboard import Prometheus mặc định nếu cần
 datasources:
   datasources.yaml:
     apiVersion: 1

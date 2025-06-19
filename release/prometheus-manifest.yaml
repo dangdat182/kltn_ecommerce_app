@@ -733,6 +733,10 @@ metadata:
   namespace: monitoring
 spec:
   type: ClusterIP
+  ipFamilyPolicy: RequireDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
   ports:
     - port: 9093
       targetPort: http
@@ -755,7 +759,11 @@ metadata:
     app.kubernetes.io/managed-by: Helm
   namespace: monitoring
 spec:
-  clusterIP: None
+  type: ClusterIP
+  ipFamilyPolicy: RequireDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
   ports:
     - port: 9093
       targetPort: http
@@ -783,6 +791,10 @@ metadata:
     prometheus.io/scrape: 'true'
 spec:
   type: "ClusterIP"
+  ipFamilyPolicy: RequireDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
   ports:
   - name: "http"
     protocol: TCP
@@ -811,6 +823,10 @@ metadata:
     prometheus.io/scrape: "true"
 spec:
   type: ClusterIP
+  ipFamilyPolicy: RequireDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
   ports:
     - port: 9100
       targetPort: 9100
@@ -836,6 +852,10 @@ metadata:
   namespace: monitoring
 spec:
   type: ClusterIP
+  ipFamilyPolicy: RequireDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
   ports:
     - port: 9091
       targetPort: 9091
@@ -859,6 +879,10 @@ metadata:
   name: prometheus-server
   namespace: monitoring
 spec:
+  ipFamilyPolicy: RequireDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
   ports:
     - name: http
       port: 80

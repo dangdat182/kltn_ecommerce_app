@@ -1,0 +1,34 @@
+server:
+  service:
+    ipFamilyPolicy: RequireDualStack
+    ipFamilies:
+      - IPv6
+      - IPv4
+
+alertmanager:
+  service:
+    ipFamilyPolicy: RequireDualStack
+    ipFamilies:
+      - IPv6
+      - IPv4
+
+pushgateway:
+  service:
+    ipFamilyPolicy: RequireDualStack
+    ipFamilies:
+      - IPv6
+      - IPv4
+
+nodeExporter:
+  service:
+    ipFamilyPolicy: RequireDualStack
+    ipFamilies:
+      - IPv6
+      - IPv4
+
+kubeStateMetrics:
+  service:
+    ipFamilyPolicy: RequireDualStack
+    ipFamilies:
+      - IPv6
+      - IPv4
