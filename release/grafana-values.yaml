@@ -1,3 +1,7 @@
+ipFamilyPolicy: RequireDualStack
+ipFamilies:
+  - IPv6
+  - IPv4
 adminUser: admin
 adminPassword: admin
 
