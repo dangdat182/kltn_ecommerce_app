@@ -847,6 +847,10 @@ spec:
   type: ClusterIP
   selector:
     app: redis-cart
+  ipFamilyPolicy: RequireDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
   ports:
   - name: redis
     port: 6379
