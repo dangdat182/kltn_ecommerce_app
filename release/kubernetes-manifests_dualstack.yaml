@@ -857,3 +857,66 @@ spec:
     targetPort: 6379
 
 ---
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: couponservice
+spec:
+  selector:
+    matchLabels:
+      app: couponservice
+  template:
+    metadata:
+      labels:
+        app: couponservice
+    spec:
+      serviceAccountName: default
+      containers:
+        - name: server
+          image: dexlo/couponservice:latest
+          ports:
+            - containerPort: 60000
+          readinessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:60000"]
+          livenessProbe:
+            exec:
+              command: ["/bin/grpc_health_probe", "-addr=:60000"]
+          env:
+            - name: PORT
+              value: "60000"
+          # - name: DISABLE_STATS
+          #   value: "1"
+          # - name: DISABLE_TRACING
+          #   value: "1"
+          # - name: DISABLE_PROFILER
+          #   value: "1"
+          # - name: JAEGER_SERVICE_ADDR
+          #   value: "jaeger-collector:14268"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 40Mi
+            limits:
+              cpu: 150m
+              memory: 70Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: couponservice
+spec:
+  type: ClusterIP
+  selector:
+    app: couponservice
+  ipFamilyPolicy: RequireDualStack
+  ipFamilies:
+    - IPv6
+    - IPv4
+  ports:
+    - name: grpc
+      port: 60000
+      targetPort: 60000
+
+---
